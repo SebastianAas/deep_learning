@@ -1,0 +1,40 @@
+{
+  "loss": "mse",
+  "learning_rate": 0.001,
+  "image_size": 30,
+  "dataset_size":500,
+  "epochs": 10,
+  "regularization": "",
+  "reg_constant": 0.0001,
+  "softmax": false,
+  "conv_layers": [
+
+  ],
+  "dense_layers": [
+    {
+      "size": 128,
+      "activation": "linear",
+      "weight_range":  [-0.1,0.1]
+    },
+    {
+      "size": 128,
+      "activation": "tanh",
+      "weight_range":  [-0.1,0.1]
+    },
+    {
+      "size": 500,
+      "activation": "tanh",
+      "weight_range":  [-0.1,0.1]
+    },
+    {
+      "size": 5,
+      "activation": "sigmoid",
+      "weight_range":  [-0.1,0.1]
+    },
+    {
+      "size": 4,
+      "activation": "relu",
+      "weight_range":  [-0.1,0.1]
+    }
+  ]
+}

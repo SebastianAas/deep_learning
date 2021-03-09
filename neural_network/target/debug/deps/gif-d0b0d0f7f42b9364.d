@@ -1,0 +1,13 @@
+C:\Users\sebas\dev\deep_learning\target\debug\deps\gif-d0b0d0f7f42b9364.rmeta: C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\lib.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\traits.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\common.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\mod.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\decoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\encoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\../README.md
+
+C:\Users\sebas\dev\deep_learning\target\debug\deps\libgif-d0b0d0f7f42b9364.rlib: C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\lib.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\traits.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\common.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\mod.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\decoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\encoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\../README.md
+
+C:\Users\sebas\dev\deep_learning\target\debug\deps\gif-d0b0d0f7f42b9364.d: C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\lib.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\traits.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\common.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\mod.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\decoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\encoder.rs C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\../README.md
+
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\lib.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\traits.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\common.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\mod.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\reader\decoder.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\encoder.rs:
+C:\Users\sebas\.cargo\registry\src\github.com-1ecc6299db9ec823\gif-0.11.1\src\../README.md:
