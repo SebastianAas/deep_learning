@@ -60,6 +60,10 @@ class NeuralNetwork:
         for layer in self.layers:
             layer.update()
 
+    def print_weights(self):
+        for layer in self.layers:
+            print(layer.weights.max)
+
 
     def reset_cache(self):
         for layer in self.layers:
@@ -78,6 +82,13 @@ class NeuralNetwork:
         np.set_printoptions(precision=4)
         for i in range(len(inputs)):
             prediction = self.predict(inputs[i])
-            print("Pred: {} \n "
-                  "Target: {} \n".format(prediction, targets[i]))
-        print("Accuracy: ", acc * 100, " %")
+            cut_off_prediction = []
+            for j in prediction:
+                if j >= 0.5:
+                    cut_off_prediction.append(1)
+                else:
+                    cut_off_prediction.append(0)
+            if (np.array(cut_off_prediction) == targets[i][-1]).all():
+                acc += 1
+            print("Pred: {}\nTarg: {} \n".format(prediction, targets[i][-1]))
+        print("Accuracy: ", acc / len(inputs) * 100, " %")

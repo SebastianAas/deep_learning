@@ -1,6 +1,6 @@
 from data_generator import generate_dataset, split_dataset, batch_iterator
 from neural_network import NeuralNetwork
-from config_files.config import *
+from config_files.config_2 import *
 from config_parser import *
 
 inputs, targets = generate_dataset(dataset_size, sequence_length, num_bits)

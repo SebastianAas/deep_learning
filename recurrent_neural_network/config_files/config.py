@@ -1,6 +1,6 @@
 
 # Data generator
-dataset_size = 100
+dataset_size = 500
 sequence_length = 8
 num_bits = 10
 
@@ -8,7 +8,7 @@ num_bits = 10
 verbose = False
 learning_rate = 0.0001
 epochs = 60
-batch_size = 2
+batch_size = 4
 loss = 'mse'
 layer_config = [
     {
@@ -25,7 +25,7 @@ layer_config = [
     {
         'type': 'dense',
         'size': num_bits,
-        'activation': 'tanh',
+        'activation': 'relu',
         'learning_rate': 0.0001
     }
 ]
