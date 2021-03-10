@@ -2,6 +2,7 @@ import numpy as np
 
 from activations import Linear
 
+print_shapes = False
 
 class Layer:
 
@@ -17,6 +18,9 @@ class Layer:
         raise NotImplementedError
 
     def update(self):
+        raise NotImplementedError
+
+    def reset_inputs(self):
         raise NotImplementedError
 
     def reset_weights(self):
@@ -38,7 +42,7 @@ class Input(Layer):
     def update(self):
         pass
 
-    def reset_weights(self):
+    def reset_cache(self):
         pass
 
 
@@ -48,24 +52,17 @@ class Dense(Layer):
         super().__init__(learning_rate, activation)
         self.weights = np.random.uniform(low=weight_range[0], high=weight_range[1], size=(input_size, output_size))
         self.bias = np.random.rand(output_size)
+        self.inputs = None
+        self.outputs = []
 
     def forward(self, x):
         self.inputs = x
         output = self.activation.forward(x @ self.weights + self.bias)
-        self.grads["output"] = output
+        self.outputs.append(output)
         return output
 
     def backward(self, grad):
-        activation_grad = self.activation.backward(grad)
-        """
-        print("Dense")
-        print("grad: ", grad.shape)
-        print("shape weights: ", self.weights.T.shape)
-        print("shape activation: ", np.diag(np.diag(activation_grad)).shape)
-        print("length diag: ", len(np.diag(activation_grad)))
-        print("diag: ", np.diag(np.diag(activation_grad)).shape)
-        print("act: ", activation_grad.shape, "\n")
-        """
+        activation_grad = self.activation.backward(self.outputs.pop())
 
         neighbor_grad = np.einsum("Bi, io -> Bio", activation_grad, self.weights.T)
         weight_grad = update_weight_grad(self, grad, activation_grad)
@@ -73,11 +70,6 @@ class Dense(Layer):
 
         self.grads["weights"] = weight_grad
         self.grads["bias"] = bias_grad
-        """
-        print("grad: ", grad.shape)
-        print("neighbor: ", neighbor_grad.shape)
-        print("prod: ", (grad @ neighbor_grad).shape)
-        """
 
         output_grad = np.einsum("Bi, Bio -> Bo", grad, neighbor_grad)
 
@@ -87,9 +79,14 @@ class Dense(Layer):
         self.weights -= self.learning_rate * self.grads["weights"]
         self.bias -= self.learning_rate * self.grads["bias"]
 
-    def reset_weights(self):
-        self.grads.pop("weights")
-        self.grads.pop("output")
+    def reset_cache(self):
+        self.inputs = None
+        self.outputs = []
+        if "weights" in self.grads:
+            self.grads.pop("weights")
+            self.grads.pop("bias")
+
+
 
 
 class RNN(Layer):
@@ -101,46 +98,54 @@ class RNN(Layer):
 
     def __init__(self, input_size, output_size, learning_rate, activation, weight_range):
         super().__init__(learning_rate, activation)
-        self.inputs = []
+        self.inputs = None
+        self.outputs = []
         self.weights = np.random.uniform(low=0.0, high=0.1, size=(input_size, output_size))
         self.internal_weights = np.random.uniform(low=weight_range[0], high=weight_range[1],
                                                   size=(output_size, output_size))
         self.bias = np.random.rand(output_size)
 
     def forward(self, x):
-        first_iteration = len(self.inputs) == 0
+        if self.inputs is None:
+            first_iteration = True
+        else:
+            first_iteration = False
         self.inputs = x
         if first_iteration:
             output = self.activation.forward(x @ self.weights + self.bias)
         else:
-            """
-            print("shape weight: ", self.weights.shape)
-            print("x: ", x.shape)
-            print("shape internal: ", self.internal_weights.shape)
-            print("output: ", self.outputs.shape)
-            """
-            output = self.activation.forward(self.outputs @ self.internal_weights + x @ self.weights)
-        self.outputs = output
+            if print_shapes:
+                print("shape weight: ", self.weights.shape)
+                print("x: ", x.shape)
+                print("shape internal: ", self.internal_weights.shape)
+                print("output: ", self.outputs.shape)
+            output = self.activation.forward(self.outputs[-1] @ self.internal_weights + x @ self.weights)
+        self.outputs.append(output)
         return output
 
     def backward(self, grad):
-        """
-        print("RNN")
-        print("grad: ", grad.shape)
-        print("shape weight: ", self.weights.T.shape)
-        print("shape internal: ", self.internal_weights.T.shape)
-        print("act: ", activation_grad.shape)
-        """
+        if print_shapes:
+            print("RNN")
+            print("grad: ", grad.shape)
+            print("shape weight: ", self.weights.T.shape)
+            print("shape internal: ", self.internal_weights.T.shape)
 
-        activation_grad = self.activation.backward(grad)
-        recurrent_grad = np.einsum("Bi, io -> Bio", activation_grad, self.weights.T)
         if "delta_jacobian" in self.grads:
-            delta_jacobian = grad + self.grads["delta_jacobian"] @ recurrent_grad
+            previous_output = self.outputs.pop()
+            activation_grad = self.activation.backward(previous_output)
+            recurrent_grad = np.einsum("Bi, io -> Bio", activation_grad, self.weights.T)
+            delta_jacobian = grad + np.einsum("Bi, Bio -> Bi", self.grads["delta_jacobian"], recurrent_grad)
         else:
+            activation_grad = np.zeros(grad.shape)
             delta_jacobian = grad
-        weight_grad = update_weight_grad(self, grad, activation_grad)
+        act_k = self.activation.backward(self.outputs[-1])
+        if len(self.outputs) == 1:
+            next_output = np.zeros(grad.shape)
+        else:
+            next_output = self.outputs[-2]
+        weight_grad = update_weight_grad(self, grad, act_k)
         bias_grad = activation_grad.sum()
-        internal_weight_grad = update_internal_weight_grad(self, grad, activation_grad)
+        internal_weight_grad = update_internal_weight_grad(self, grad, act_k, next_output)
         neighbor_grad = np.einsum("Bi, io -> Bio", activation_grad, self.weights.T)
         out_grad = delta_jacobian @ neighbor_grad
 
@@ -153,16 +158,21 @@ class RNN(Layer):
         return out_grad
 
     def update(self):
+        #print("update: ", self.grads["weights"])
         self.weights -= self.learning_rate * self.grads["weights"]
         self.internal_weights -= self.learning_rate * self.grads["internal_weights"]
-        self.bias -= self.learning_rate * self.grads["bias"]
+        #self.bias -= self.learning_rate * self.grads["bias"]
 
-    def reset_weights(self):
-        self.grads.pop("delta_jacobian")
-        self.grads.pop("internal_weights")
-        self.grads.pop("weights")
-        self.grads.pop("bias")
-        self.grads.pop("out")
+
+    def reset_cache(self):
+        self.inputs = None
+        self.outputs = []
+        if "delta_jacobian" in self.grads:
+            self.grads.pop("delta_jacobian")
+            self.grads.pop("internal_weights")
+            self.grads.pop("weights")
+            self.grads.pop("bias")
+            self.grads.pop("out")
 
 
 def update_weight_grad(self, grad, activation_grad):
@@ -174,9 +184,9 @@ def update_weight_grad(self, grad, activation_grad):
     return weight_grad
 
 
-def update_internal_weight_grad(self, grad, activation_grad):
+def update_internal_weight_grad(self, grad, activation_grad, next_output):
     if "internal_weights" in self.grads:
-        weight_grad = self.grads["internal_weights"] + np.einsum("Bi, ih -> hi", grad, activation_grad.T @ self.outputs)
+        weight_grad = self.grads["internal_weights"] + np.einsum("Bi, ih -> hi", grad, activation_grad.T @ next_output)
     else:
-        weight_grad = np.einsum("Bi, ih -> hi", grad, activation_grad.T @ self.outputs)
+        weight_grad = np.einsum("Bi, ih -> hi", grad, activation_grad.T @ next_output)
     return weight_grad

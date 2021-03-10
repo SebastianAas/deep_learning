@@ -1,4 +1,4 @@
-from data_generator import generate_dataset, split_dataset
+from data_generator import generate_dataset, split_dataset, batch_iterator
 from neural_network import NeuralNetwork
 from config_files.config import *
 from config_parser import *
@@ -14,10 +14,9 @@ nn = NeuralNetwork(
     loss=get_loss_function(loss),
     learning_rate=learning_rate,
 )
-
 nn.fit(
-    inputs=inputs,
-    targets=targets,
+    inputs=train_inputs,
+    targets=train_targets,
     validation_inputs=val_inputs,
     validation_targets=val_targets,
     epochs=epochs,
