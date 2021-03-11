@@ -1,6 +1,6 @@
 
 # Data generator
-dataset_size = 100
+dataset_size = 200
 sequence_length = 8
 num_bits = 10
 
@@ -8,7 +8,7 @@ num_bits = 10
 verbose = False
 learning_rate = 0.0001
 epochs = 20
-batch_size = 4
+batch_size = 2
 loss = 'mse'
 layer_config = [
     {
@@ -18,25 +18,25 @@ layer_config = [
     {
         'type': 'recurrent',
         'size': 64,
-        'activation': 'tanh',
+        'activation': 'sigmoid',
         'learning_rate': 0.0001
     },
     {
         'type': 'recurrent',
         'size': 64,
-        'activation': 'tanh',
+        'activation': 'sigmoid',
         'learning_rate': 0.0001
     },
     {
         'type': 'recurrent',
         'size': 64,
-        'activation': 'tanh',
+        'activation': 'sigmoid',
         'learning_rate': 0.0001
     },
     {
         'type': 'dense',
         'size': num_bits,
-        'activation': 'tanh',
+        'activation': 'sigmoid',
         'learning_rate': 0.0001
     }
 ]
