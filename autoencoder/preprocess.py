@@ -4,11 +4,13 @@ import pandas as pd
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
+import config
 
-def get_data(name_of_dataset, split):
+
+def get_data(name_of_dataset, num_samples, split):
     (ds_train, ds_test), ds_info = tfds.load(
         name_of_dataset,
-        split=['train[0:{}%]'.format(int(split * 100)), 'test'],
+        split=['train[0:{}]'.format(int(split * num_samples)), 'train[{}:{}]'.format(int(split * num_samples) + 1, num_samples)],
         shuffle_files=True,
         as_supervised=True,
         with_info=True,
@@ -22,24 +24,20 @@ def normalize_img(image, label):
 
 
 def remove_label(image, label):
-    return image
-
-
-def preprocess_data(data, shuffle=False, batch=False):
-    data = data.map(
-        normalize_img, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache()
-    if shuffle:
-        data = data.shuffle(data.splits['train'].num_examples)
-    if batch:
-        data = data.batch(32)
-    data = data.prefetch(tf.data.experimental.AUTOTUNE)
-    return data
+    return image, image
 
 
 def unlabel_data(data):
     return data.map(
         remove_label, num_parallel_calls=tf.data.experimental.AUTOTUNE)
 
+def preprocess_data(data, shuffle=False, batch=True):
+    data = data.map(
+        normalize_img, num_parallel_calls=tf.data.experimental.AUTOTUNE).cache()
+    if shuffle:
+        data = data.shuffle(tf.data.experimental.cardinality(data).numpy())
+    if batch:
+        data = data.batch(32, drop_remainder=True)
+    data = data.prefetch(tf.data.experimental.AUTOTUNE)
+    return data
 
-def to_numpy(x):
-    return np.array(list(x.as_numpy_iterator()))

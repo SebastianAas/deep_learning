@@ -8,28 +8,35 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from tensorflow.keras import layers, losses
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Flatten, Conv2D
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, Input
+
+import config
 
 
 class NeuralNetwork(Model):
-    def __init__(self):
+    def __init__(self,image_shape, num_labels):
         super(NeuralNetwork, self).__init__()
-        self.conv1 = Conv2D(32, 3, activation='relu')
-        self.flatten = Flatten()
+        self.flatten = Flatten(input_shape=image_shape)
         self.d1 = Dense(128, activation='relu')
-        self.d2 = Dense(10)
+        self.d2 = layers.Dense(64, activation='relu')
+        self.d3 = Dense(num_labels, activation='softmax')
 
     def call(self, x):
-        x = self.conv1(x)
         x = self.flatten(x)
         x = self.d1(x)
-        return self.d2(x)
+        x = self.d2(x)
+        return self.d3(x)
 
-# Create an instance of the model
 
-def get_neural_network():
-    nn = NeuralNetwork()
-    nn.compile(optimizer='adam', loss=losses.MeanSquaredError())
+
+def get_neural_network(image_shape, num_labels):
+    input = layers.Input(shape=image_shape)
+    x = layers.Flatten()(input)
+    x = layers.Dense(128, activation='relu')(x)
+    x = layers.Dense(64, activation='relu')(x)
+    x = layers.Dense(config.latent_vector_size, activation='relu')(x)
+    classifier = layers.Dense(num_labels, activation='relu')(x),
+    return Model(input, classifier)
 
 
 
