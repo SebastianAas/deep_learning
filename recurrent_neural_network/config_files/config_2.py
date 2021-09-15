@@ -1,13 +1,14 @@
 
 # Data generator
-dataset_size = 128
-sequence_length = 15
+dataset_size = 200
+sequence_length = 8
 num_bits = 10
 
 # Neural Network
-learning_rate = 0.001
-epochs = 100
-batch_size = 32
+verbose = False
+learning_rate = 0.0001
+epochs = 20
+batch_size = 2
 loss = 'mse'
 layer_config = [
     {
@@ -16,20 +17,26 @@ layer_config = [
     },
     {
         'type': 'recurrent',
-        'size': 20,
-        'activation': 'relu',
-        'learning_rate': 0.001
+        'size': 64,
+        'activation': 'sigmoid',
+        'learning_rate': 0.0001
     },
     {
-        'type': 'dense',
-        'size': 20,
-        'activation': 'relu',
-        'learning_rate': 0.001
+        'type': 'recurrent',
+        'size': 64,
+        'activation': 'sigmoid',
+        'learning_rate': 0.0001
+    },
+    {
+        'type': 'recurrent',
+        'size': 64,
+        'activation': 'sigmoid',
+        'learning_rate': 0.0001
     },
     {
         'type': 'dense',
         'size': num_bits,
-        'activation': 'linear',
-        'learning_rate': 0.001
+        'activation': 'sigmoid',
+        'learning_rate': 0.0001
     }
 ]

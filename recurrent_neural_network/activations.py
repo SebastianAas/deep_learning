@@ -35,8 +35,8 @@ class Tanh(Activation):
             return np.tanh(x)
 
         def tanh_derivative(x):
-            y = tanh(x)
-            return 1 - y**2
+            y = np.tanh(x)
+            return 1 - np.power(y, 2)
 
         super().__init__(tanh, tanh_derivative)
 

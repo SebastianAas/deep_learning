@@ -15,8 +15,9 @@ def generate_dataset(size, sequence_length, num_bits):
         for i in range(sequence_length):
             sequence[i] = bit_pattern
             bit_pattern = np.roll(bit_pattern, pattern)
+            target[i] = bit_pattern
         inputs.append(sequence)
-        targets.append(bit_pattern)
+        targets.append(target)
     return inputs, targets
 
 
@@ -36,12 +37,11 @@ def visualize_data(data):
 
 def batch_iterator(batch_size, inputs, targets):
     size = len(inputs)
-    print(size)
     splits = np.arange(0, size, batch_size)
     for start in splits:
         end = start + batch_size
         batch_inputs = np.array(inputs)[start:end].transpose((1, 0, 2))
-        batch_targets = np.array(targets)[start:end]
+        batch_targets = np.array(targets)[start:end].transpose((1, 0, 2))
         if batch_inputs.shape[1] == batch_size:
             yield batch_inputs, batch_targets
         else:
