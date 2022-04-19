@@ -19,3 +19,12 @@ The input of the recurrent neural network was an image with a special sequence o
 
 ![Input data for the recurrent neural network](https://github.com/SebastianAas/deep_learning/blob/main/recurrent_neural_network/examples/sequence-1.png)
 
+
+## Assignment 3
+The third assignment went in to the subject of autoencoders.  
+The goal of the assingment was to create an autoencoder. An autoencoder is a form 
+
+
+![Autoencoder reconstruction](https://github.com/SebastianAas/deep_learning/blob/main/autoencoder/plots/fashion_mnist/reconstruction.png)
+
+
